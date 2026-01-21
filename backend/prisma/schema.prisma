@@ -1,0 +1,103 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  username     String    @unique
+  email        String    @unique
+  passwordHash String
+  role         Role      @default(USER)
+  createdAt    DateTime  @default(now())
+  prenom    String
+  nom     String
+  comments     Comment[]
+  followers    Follow[]  @relation("FollowedBy")
+  following    Follow[]  @relation("Follows")
+  likes        Like[]
+  posts        Post[]
+}
+
+enum PostStatus {
+  pending
+  approved
+  rejected
+}
+
+model Post {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  themeId     Int
+  categoryId  Int
+  title       String
+  description String
+  imageUrl    String?
+  altText     String?
+  slug        String    @unique
+  content     String
+  createdAt   DateTime  @default(now())
+  status      PostStatus @default(pending)
+  comments    Comment[]
+  likes       Like[]
+  category    Category  @relation(fields: [categoryId], references: [id])
+  theme       Theme     @relation(fields: [themeId], references: [id])
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Theme {
+  id         Int        @id @default(autoincrement())
+  name       String     @unique
+  categories Category[]
+  posts      Post[]
+}
+
+model Category {
+  id      Int    @id @default(autoincrement())
+  name    String
+  themeId Int
+  theme   Theme  @relation(fields: [themeId], references: [id])
+  posts   Post[]
+
+  @@unique([name, themeId])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  postId    Int
+  content   String
+  createdAt DateTime @default(now())
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Like {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  postId    Int
+  createdAt DateTime @default(now())
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+}
+
+model Follow {
+  follower_id Int
+  followed_id Int
+  created_at  DateTime @default(now())
+  followed    User     @relation("FollowedBy", fields: [followed_id], references: [id])
+  follower    User     @relation("Follows", fields: [follower_id], references: [id])
+
+  @@id([follower_id, followed_id])
+}
+
+enum Role {
+  USER
+  ADMIN
+}
