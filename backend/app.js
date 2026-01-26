@@ -41,12 +41,14 @@ app.use(
   cors({
     origin: function (origin, callback) {
       if (!origin) return callback(null, true);
+
       const isAllowed = allowedOrigins.some((allowedOrigin) => {
         if (allowedOrigin instanceof RegExp) return allowedOrigin.test(origin);
         return allowedOrigin === origin;
       });
+
       if (isAllowed) callback(null, true);
-      else callback(new Error("Not allowed by CORS"));
+      else callback(new Error(`CORS blocked for origin: ${origin}`));
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
@@ -90,6 +92,7 @@ app.listen(port, "0.0.0.0", () => {
   // ✅ Escucha en todas las interfaces
   console.log(`🚀 Serveur lancé sur :${port}`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}`);
+console.log(`📡 Allowed CORS origins: ${allowedOrigins.join(", ")}`);
 });
 
 export default app;
