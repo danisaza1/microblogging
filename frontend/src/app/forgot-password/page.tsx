@@ -36,8 +36,8 @@ const ForgotPasswordPage: React.FC = () => {
 
     try {
       const res = await fetch(
-        'http://localhost:3001/api/auth/reset-password-direct',
-        {
+         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/reset-password-direct`,
+    {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

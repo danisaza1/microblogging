@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import Image from 'next/image';
+import React, { useState } from "react";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import Image from "next/image";
 
 const SignUpPage: React.FC = () => {
   const [formData, setFormData] = useState({
-    prenom: '',
-    nom: '',
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+    prenom: "",
+    nom: "",
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
 
   const [latestUser, setLatestUser] = useState<{
@@ -21,7 +21,7 @@ const SignUpPage: React.FC = () => {
     email: string;
   } | null>(null);
 
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   const [inscriptionRéussie, setInscriptionRéussie] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,7 +29,7 @@ const SignUpPage: React.FC = () => {
       ...formData,
       [e.target.name]: e.target.value,
     });
-    setErrorMessage('');
+    setErrorMessage("");
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -41,12 +41,14 @@ const SignUpPage: React.FC = () => {
     }
 
     try {
-      const res = await fetch('http://localhost:3001/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          prenom: formData.prenom,
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/signup`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            prenom: formData.prenom,
           nom: formData.nom,
           username: formData.username,
           email: formData.email,
@@ -62,21 +64,22 @@ const SignUpPage: React.FC = () => {
 
       // Réinitialisation du formulaire + succès
       setFormData({
-        prenom: '',
-        nom: '',
-        username: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
+        prenom: "",
+        nom: "",
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
       });
       alert("Compte créé avec succès !");
       setInscriptionRéussie(true);
 
       // Récupère le dernier inscrit
-      const resLatest = await fetch('http://localhost:3001/api/auth/latest-user');
+      const resLatest = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/latest-user`,
+      );
       const latestData = await resLatest.json();
       setLatestUser(latestData);
-
     } catch (err) {
       setErrorMessage("Une erreur réseau s’est produite.");
       console.error(err);
@@ -102,17 +105,28 @@ const SignUpPage: React.FC = () => {
           {/* Formulaire */}
           <div className="flex flex-col justify-center">
             <div className="mb-8 text-center">
-              <h2 className="text-3xl font-extrabold text-gray-900">Créez votre compte</h2>
-              <p className="mt-2 text-sm text-gray-600">Rejoignez-nous et exprimez-vous en un éclair ⚡</p>
+              <h2 className="text-3xl font-extrabold text-gray-900">
+                Créez votre compte
+              </h2>
+              <p className="mt-2 text-sm text-gray-600">
+                Rejoignez-nous et exprimez-vous en un éclair ⚡
+              </p>
             </div>
 
             <form className="space-y-6" onSubmit={handleSubmit}>
-              {['prenom', 'nom', 'username', 'email'].map((field) => (
+              {["prenom", "nom", "username", "email"].map((field) => (
                 <div key={field}>
-                  <label htmlFor={field} className="block text-sm font-medium text-gray-700">
-                    {field === 'username' ? 'Nom d’utilisateur' :
-                     field === 'email' ? 'Adresse E-mail' :
-                     field === 'nom' ? 'Nom' : 'Prénom'}
+                  <label
+                    htmlFor={field}
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    {field === "username"
+                      ? "Nom d’utilisateur"
+                      : field === "email"
+                        ? "Adresse E-mail"
+                        : field === "nom"
+                          ? "Nom"
+                          : "Prénom"}
                   </label>
                   <input
                     type="text"
@@ -128,7 +142,12 @@ const SignUpPage: React.FC = () => {
               ))}
 
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">Mot de passe</label>
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Mot de passe
+                </label>
                 <input
                   type="password"
                   name="password"
@@ -142,7 +161,12 @@ const SignUpPage: React.FC = () => {
               </div>
 
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">Confirmer le mot de passe</label>
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Confirmer le mot de passe
+                </label>
                 <input
                   type="password"
                   name="confirmPassword"
@@ -169,8 +193,11 @@ const SignUpPage: React.FC = () => {
 
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
-                Vous avez déjà un compte ?{' '}
-                <a href="/login" className="font-medium text-black hover:underline">
+                Vous avez déjà un compte ?{" "}
+                <a
+                  href="/login"
+                  className="font-medium text-black hover:underline"
+                >
                   Connectez-vous
                 </a>
               </p>
@@ -180,7 +207,11 @@ const SignUpPage: React.FC = () => {
             {latestUser && inscriptionRéussie && (
               <div className="mt-8 bg-green-50 p-4 border border-green-200 rounded-md text-center">
                 <p className="text-sm text-gray-700">
-                   Dernier inscrit : <strong>{latestUser.prenom} {latestUser.nom}</strong> ({latestUser.email})
+                  Dernier inscrit :{" "}
+                  <strong>
+                    {latestUser.prenom} {latestUser.nom}
+                  </strong>{" "}
+                  ({latestUser.email})
                 </p>
               </div>
             )}

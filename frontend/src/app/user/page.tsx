@@ -33,7 +33,7 @@ useEffect(() => {
   const fetchPosts = async () => {
     if (!user) return; // on ne vérifie plus token ici, car il est géré en global
     try {
-      const res = await fetchWithAuth(`http://localhost:3001/api/users/${user.id}`);
+      const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${user.id}`);
       const data = await res.json();
 
       if (res.ok) {
@@ -70,7 +70,7 @@ useEffect(() => {
   //   if (!confirm("Êtes-vous sûr de vouloir supprimer ce post ?")) return;
 
   //   try {
-  //     const res = await fetchWithAuth(`http://localhost:3001/api/posts/${id}`, {
+  //     const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${id}`, {
   //       method: "DELETE",
   //     });
 
@@ -94,7 +94,7 @@ useEffect(() => {
   //Pour mettre à jour les modifications
   const handleUpdatePost = async (id: string) => {
   try {
-    const res = await fetchWithAuth(`http://localhost:3001/api/posts/modify/${id}`, {
+    const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/modify/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -128,7 +128,7 @@ const confirmDeletePost = async () => {
   if (!postToDelete) return;
 
   try {
-    const res = await fetchWithAuth(`http://localhost:3001/api/posts/${postToDelete}`, {
+    const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${postToDelete}`, {
       method: "DELETE",
     });
 

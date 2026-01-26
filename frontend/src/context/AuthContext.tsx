@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const refresh = async () => {
     try {
       const res = await fetch(
-        "http://localhost:3001/api/auth/refresh-token",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/refresh-token`,
         {
           method: "POST",
           credentials: "include",
@@ -101,7 +101,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = async () => {
     try {
-      await fetch("http://localhost:3001/api/auth/logout", {
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/logout`, {
         method: "POST",
         credentials: "include",
       });

@@ -46,7 +46,7 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}) {
 
   // Si token expiré, tentative de refresh
   if (res.status === 401 || res.status === 403) {
-    const refreshRes = await fetch('http://localhost:3001/api/auth/refresh-token', {
+    const refreshRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/refresh-token`, {
       method: 'POST',
       credentials: 'include',
     });

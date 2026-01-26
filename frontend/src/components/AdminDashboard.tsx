@@ -24,7 +24,7 @@ export default function AdminDashboard() {
   // Récupération des utilisateurs
   useEffect(() => {
     const fetchUsers = async () => {
-      const res = await fetchWithAuth("http://localhost:3001/api/users");
+      const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users`);
       const data = await res.json();
       if (res.ok) setUsers(data as User[]);
       else console.error("Erreur chargement des utilisateurs :", data.error);
@@ -35,7 +35,7 @@ export default function AdminDashboard() {
   // Récupération des posts en attente
   useEffect(() => {
     const fetchPendingPosts = async () => {
-      const res = await fetchWithAuth("http://localhost:3001/api/admin/pending-posts");
+      const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/admin/pending-posts`);
       const data = await res.json();
       if (res.ok) setPendingPosts(data as Post[]);
       else console.error("Erreur chargement des posts en attente :", data.error);
@@ -46,7 +46,7 @@ export default function AdminDashboard() {
   // Changement de rôle
   const handleRoleChange = async (userId: string, newRole: "USER" | "ADMIN") => {
     try {
-      const res = await fetchWithAuth("http://localhost:3001/api/admin/assign-role", {
+      const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/admin/assign-role`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId, role: newRole }),
@@ -65,12 +65,12 @@ export default function AdminDashboard() {
 
   // Validation des posts
   const handleApprove = async (id: string) => {
-    await fetchWithAuth(`http://localhost:3001/api/admin/posts/${id}/approve`, { method: "PUT" });
+    await fetchWithAuth(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/admin/posts/${id}/approve`, { method: "PUT" });
     setPendingPosts((prev) => prev.filter((post) => post.id !== id));
   };
 
   const handleReject = async (id: string) => {
-    await fetchWithAuth(`http://localhost:3001/api/admin/posts/${id}/reject`, { method: "PUT" });
+    await fetchWithAuth(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/admin/posts/${id}/reject`, { method: "PUT" });
     setPendingPosts((prev) => prev.filter((post) => post.id !== id));
   };
 
