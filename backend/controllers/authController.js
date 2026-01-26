@@ -18,7 +18,6 @@ const generateAccessToken = (user) =>
     { expiresIn: "1h" }
   );
 
-console.log("JWT_SECRET SIGN (authController):", JWT_SECRET);
 const generateRefreshToken = (user) =>
   jwt.sign({ userId: user.id }, REFRESH_SECRET, { expiresIn: "7d" });
 

@@ -2,7 +2,6 @@ import jwt from 'jsonwebtoken';
 
 // Authentifie l'utilisateur via JWT
 export const authenticateToken = (req, res, next) => {
-  console.log("JWT_SECRET VERIFY (middleware):", process.env.JWT_SECRET);
 
   const authHeader = req.headers['authorization']; // Format attendu : "Bearer <token>"
   const token = authHeader && authHeader.split(' ')[1];
