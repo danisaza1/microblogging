@@ -79,7 +79,7 @@ const VoiturePage: React.FC = async () => {
                   key={article.slug}
                   className="hover:opacity-90 transition duration-300 block"
                 >
-                  <MainArticleCard {...article} categoryName={article.categoryName} />
+                  <MainArticleCard postId={""} {...article} categoryName={article.categoryName} />
                 </Link>
               ))
             ) : (

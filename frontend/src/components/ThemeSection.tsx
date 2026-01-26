@@ -5,6 +5,7 @@ interface Theme {
   description: string;
   bgColor: string;
   image: string;
+  url?: string;
 }
 
 const themes: Theme[] = [
@@ -12,6 +13,7 @@ const themes: Theme[] = [
     name: "Culture",
     description: "Cinéma, livres, art & expos.",
     bgColor: "#f9fafb",
+    url: "/culture",
     image:
       "https://res.cloudinary.com/dtbwsvacq/image/upload/v1753284292/cinema_pk6obn.jpg",
   },
@@ -19,20 +21,23 @@ const themes: Theme[] = [
     name: "Voyage",
     description: "Découvertes et coins de paradis.",
     bgColor: "#f9fafb",
+    url: "/voyage",
     image:
       "https://res.cloudinary.com/dtbwsvacq/image/upload/v1753284300/voyage_rvhiar.jpg",
   },
   {
-    name: "Science et technologie",
+    name: "Science & technologie",
     description: "Recherche, innovation et impact",
     bgColor: "#f9fafb",
+    url: "/science-technologie",
     image:
       "https://res.cloudinary.com/dtbwsvacq/image/upload/v1753787089/science_techno_xsfrvu.jpg",
   },
   {
-    name: "Automobile",
+    name: "Voiture",
     description: "Tuning, lifestyle & mécaniques.",
     bgColor: "#f9fafb",
+    url: "/voiture",
     image:
       "https://res.cloudinary.com/dtbwsvacq/image/upload/v1753284291/car_tzhyf2.jpg",
   },
@@ -56,6 +61,7 @@ const ThemeSection: React.FC = () => {
             style={{ backgroundColor: theme.bgColor }}
           >
             {/* photo /} */}
+            <a href={theme.url}>
             <div className="grow flex items-center justify-center mb-4">
               <img
                 src={theme.image}
@@ -63,6 +69,7 @@ const ThemeSection: React.FC = () => {
                 className="w-full h-auto rounded-xl filter grayscale transition-all duration-500 group-hover:filter-none object-cover aspect-video"
               />
             </div>
+            </a>
 
             {/*text */}
             <div className="px-2 pb-2">

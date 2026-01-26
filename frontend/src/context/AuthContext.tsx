@@ -54,44 +54,43 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // 🟢 Rafraîchissement du token au montage
   useEffect(() => {
-    const refresh = async () => {
-      try {
-        const res = await fetch(
-          "http://localhost:3001/api/auth/refresh-token",
-          {
-            method: "POST",
-            credentials: "include", // Important si usas cookies HttpOnly
-            headers: {
-              "Content-Type": "application/json",
-            },
+  const refresh = async () => {
+    try {
+      const res = await fetch(
+        "http://localhost:3001/api/auth/refresh-token",
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
           },
-        );
+        },
+      );
 
-        if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(errorData.error || "Échec du refresh token");
-        }
-
-        const data = await res.json();
-        setToken(data.accessToken);
-        setAccessToken(data.accessToken); // 🔐 update global
-        setUser(data.user);
-        console.log("🔄 Token rafraîchi !");
-      } catch (err: unknown) {
-        if (err instanceof Error) {
-          console.error("Erreur lors du refresh :", err.message);
-        } else {
-          console.error("Erreur lors du refresh :", err);
-        }
-        setToken(null);
-        setAccessToken(null);
-        setUser(null);
-        router.push("/login"); // Redirige al login si falla el refresh
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Échec du refresh token");
       }
-    };
 
-    refresh();
-  }, [router]);
+      const data = await res.json();
+      setToken(data.accessToken);
+      setAccessToken(data.accessToken);
+      setUser(data.user);
+      console.log("🔄 Token rafraîchi !");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.warn("⚠️ Pas de token valide :", err.message);
+      }
+      // Solo limpiar estado, NO redirigir
+      setToken(null);
+      setAccessToken(null);
+      setUser(null);
+    }
+  };
+
+  refresh();
+}, []);
+
 
   const login = (newToken: string, user: User) => {
     setToken(newToken);
