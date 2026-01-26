@@ -31,6 +31,11 @@ const port = process.env.PORT || 3001; // ✅ Railway usa PORT dinámico
 app.use(express.json());
 app.use(cookieParser());
 
+app.options("*", cors({
+  origin: allowedOrigins,
+  credentials: true,
+}));
+
 // ✅ CORS configurado para desarrollo Y producción
 const allowedOrigins = [
   "http://localhost:3000", // Desarrollo local
