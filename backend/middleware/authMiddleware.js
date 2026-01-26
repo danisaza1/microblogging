@@ -2,6 +2,8 @@ import jwt from 'jsonwebtoken';
 
 // Authentifie l'utilisateur via JWT
 export const authenticateToken = (req, res, next) => {
+  console.log("JWT_SECRET VERIFY (middleware):", process.env.JWT_SECRET);
+
   const authHeader = req.headers['authorization']; // Format attendu : "Bearer <token>"
   const token = authHeader && authHeader.split(' ')[1];
 
@@ -25,6 +27,8 @@ export const authenticateToken = (req, res, next) => {
 
     next();
   } catch (error) {
+    console.error("JWT ERROR NAME:", error.name);
+     console.error("JWT ERROR MESSAGE:", error.message);
     console.error('Erreur vérif token :', error);
     return res.status(403).json({ error: 'Token invalide ou expiré.' });
   }

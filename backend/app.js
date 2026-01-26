@@ -51,7 +51,7 @@ app.use('/api/themes', themeRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', authenticateToken, verifyAdmin, adminRoutes);
 app.use('/api', uploadRoutes); // Adjust this path if upload is more specific (e.g., /api/upload)
-app.use('/api/posts', likesRoutes); // Keep your likes routes mounted correctly
+app.use('/api/likes', likesRoutes); // Keep your likes routes mounted correctly
 
 // ✅ CRITICAL FIX: Mount commentsRoutes AGAIN for POST-SPECIFIC /api/posts/:postId/comments routes
 // This allows the router.get('/:postId/comments') and router.post('/:postId/comments')

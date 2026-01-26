@@ -1,114 +1,101 @@
 // routes/likes.js
 import { Router } from 'express';
-import prisma from '../lib/prismaClient.js'; // Adjust path as per your structure
-import { optionalAuth, authenticateToken, verifyAdmin } from '../middleware/authMiddleware.js';
+import prisma from '../lib/prismaClient.js';
+import { optionalAuth, authenticateToken } from '../middleware/authMiddleware.js';
 
 const router = Router();
 
-// GET /:postId/likes (This will become /api/posts/:postId/likes)
-router.get('/:postId/likes', optionalAuth, async (req, res) => {
+console.log('🔥 Likes router LOADED');
+
+/**
+ * GET likes of a post
+ * GET /api/likes/posts/:postId
+ */
+router.get('/posts/:postId', optionalAuth, async (req, res) => {
   try {
-    const { postId } = req.params;
+    const postId = Number(req.params.postId);
 
-    console.log(`📊 Backend: Fetching likes for post ${postId}`); // Added backend log
+    console.log(`📊 Fetching likes for post ${postId}`);
 
-    // Count likes for the post
-    const likesCount = await prisma.like.count({
-      where: {
-        postId: parseInt(postId)
-      }
+    const count = await prisma.like.count({
+      where: { postId }
     });
 
     let likedByUser = false;
 
-    // Only check if the user is authenticated (req.user is populated by optionalAuth)
     if (req.user?.id) {
-      const userLike = await prisma.like.findUnique({
+      const existingLike = await prisma.like.findUnique({
         where: {
           userId_postId: {
-            userId: parseInt(req.user.id),
-            postId: parseInt(postId)
+            userId: Number(req.user.id),
+            postId
           }
         }
       });
-      likedByUser = !!userLike;
+
+      likedByUser = Boolean(existingLike);
     }
 
     res.json({
-      count: likesCount,
-      likedByUser,
-      postId: parseInt(postId)
+      postId,
+      count,
+      likedByUser
     });
-
   } catch (error) {
-    console.error('❌ Backend: Error getting likes:', error); // Added backend log
-    res.status(500).json({
-      error: 'Error interno del servidor',
-      message: 'No se pudieron cargar los likes'
-    });
+    console.error('❌ Error fetching likes:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
 
-// POST /:postId/like (This will become /api/posts/:postId/like)
-router.post('/:postId/like', authenticateToken, async (req, res) => { // Using authenticateToken as per your auth.js
+/**
+ * TOGGLE like
+ * POST /api/likes/posts/:postId
+ */
+router.post('/posts/:postId', authenticateToken, async (req, res) => {
   try {
-    const { postId } = req.params;
-    const userId = req.user.id; // req.user should be populated by authenticateToken
+    const postId = Number(req.params.postId);
+    const userId = Number(req.user.id);
 
-    console.log(`❤️ Backend: Toggle like: Post ${postId}, User ${userId}`); // Added backend log
+    console.log(`❤️ Toggle like | post=${postId} user=${userId}`);
 
-    // Check if the like already exists
     const existingLike = await prisma.like.findUnique({
       where: {
         userId_postId: {
-          userId: parseInt(userId),
-          postId: parseInt(postId)
+          userId,
+          postId
         }
       }
     });
 
-    let liked = false;
+    let liked;
 
     if (existingLike) {
-      // ❌ Remove like
       await prisma.like.delete({
-        where: {
-          id: existingLike.id
-        }
+        where: { id: existingLike.id }
       });
-      console.log(`💔 Backend: Like removed: Post ${postId}, User ${userId}`); // Added backend log
+      liked = false;
+      console.log('💔 Like removed');
     } else {
-      // ❤️ Add like
       await prisma.like.create({
-        data: {
-          userId: parseInt(userId),
-          postId: parseInt(postId)
-        }
+        data: { userId, postId }
       });
       liked = true;
-      console.log(`💖 Backend: Like added: Post ${postId}, User ${userId}`); // Added backend log
+      console.log('💖 Like added');
     }
 
-    // Get the updated like count
-    const likesCount = await prisma.like.count({
-      where: {
-        postId: parseInt(postId)
-      }
+    const count = await prisma.like.count({
+      where: { postId }
     });
 
     res.json({
+      postId,
+      userId,
       liked,
-      count: likesCount,
-      postId: parseInt(postId),
-      userId: parseInt(userId)
+      count
     });
-
   } catch (error) {
-    console.error('❌ Backend: Error in toggle like:', error); // Added backend log
-    res.status(500).json({
-      error: 'Error interno del servidor',
-      message: 'No se pudo procesar el like'
-    });
+    console.error('❌ Error toggling like:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
 
