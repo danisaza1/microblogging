@@ -88,9 +88,11 @@ app.use(errorHandler);
 // Démarrage serveur
 app.listen(port, "0.0.0.0", () => {
   // ✅ Escucha en todas las interfaces
-  console.log(`🚀 Serveur lancé sur : http://localhost:${port}`);
+  console.log(`🚀 Serveur lancé sur :${port}`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}`);
   console.log(`📡 Routes de commentaires disponibles:`);
+    console.log(`🚀 Serveur lancé sur : http://localhost:${port}`);
+
 });
 
 export default app;
