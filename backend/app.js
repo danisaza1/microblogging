@@ -31,10 +31,6 @@ const port = process.env.PORT || 3001; // ✅ Railway usa PORT dinámico
 app.use(express.json());
 app.use(cookieParser());
 
-app.options("*", cors({
-  origin: allowedOrigins,
-  credentials: true,
-}));
 
 // ✅ CORS configurado para desarrollo Y producción
 const allowedOrigins = [
@@ -73,6 +69,11 @@ app.use(
     maxAge: 86400, // Cache preflight por 24 horas
   }),
 );
+
+app.options("*", cors({
+  origin: allowedOrigins,
+  credentials: true,
+}));
 
 // ✅ Health check para Railway/Vercel
 app.get("/health", (req, res) => {
