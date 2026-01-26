@@ -3,9 +3,8 @@ import MainArticleCard from "@/components/MainArticleCard";
 import TopNewsArticle from "@/components/TopNewsArticle";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import Link from "next/link";
-
 interface ArticleSummary {
+  id: number;
   slug: string;
   imageUrl: string;
   altText: string;
@@ -52,7 +51,6 @@ async function getScienceTechnoArticles(): Promise<ArticleSummary[]> {
   return res.json();
 }
 
-
 // Function to fetch top news articles for the "Science & Technologie" theme
 async function getTopScienceNews(): Promise<TopNewsArticleProps[]> {
   try {
@@ -95,19 +93,17 @@ const SciencePage: React.FC = async () => {
           <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12 grow">
             {ScienceArticles.length > 0 ? (
               ScienceArticles.map((article) => (
-                <Link
-                  href={`/articles/${article.slug}`}
-                  key={article.slug}
-                  className="hover:opacity-90 transition duration-300 block"
-                >
-                  <MainArticleCard
-                  postId={""} {...article}
-                  categoryName={article.categoryName}                  />
-                </Link>
+                <MainArticleCard
+                  key={article.slug} // ✅ key único
+                  postId={article.id} // ✅ para LikeButton
+                  {...article}
+                  categoryName={article.categoryName}
+                />
               ))
             ) : (
               <p className="text-gray-600 col-span-full">
-                Aucun article sur la Science & Technologie trouvé pour le moment.
+                Aucun article sur la Science & Technologie trouvé pour le
+                moment.
               </p>
             )}
           </section>

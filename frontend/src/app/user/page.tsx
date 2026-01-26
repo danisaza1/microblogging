@@ -57,13 +57,13 @@ useEffect(() => {
   };
   
   //Pour créer un post
-  const handleCreatePost = (id: string) => {
-    const updatedPosts = posts.map((post) =>
-      post.id === id ? { ...post, title: editTitle, content: editContent } : post
-    );
-    setPosts(updatedPosts);
-    handleCancelEdit();
-  };
+  // const handleCreatePost = (id: string) => {
+  //   const updatedPosts = posts.map((post) =>
+  //     post.id === id ? { ...post, title: editTitle, content: editContent } : post
+  //   );
+  //   setPosts(updatedPosts);
+  //   handleCancelEdit();
+  // };
 
   //Pour supprimer un post
   // const handleDeletePost = async (id: string) => {

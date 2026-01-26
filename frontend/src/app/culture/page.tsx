@@ -4,14 +4,13 @@ import MainArticleCard from "@/components/MainArticleCard";
 import TopNewsArticle from "@/components/TopNewsArticle";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import Link from "next/link";
 
 interface ArticleSummary {
   id:number;
   slug: string;
   imageUrl: string;
   altText: string;
-  categoryName: string; // Ensure this matches your backend's formatPostForFrontend
+  categoryName: string; 
   title: string;
   description: string;
   authorName: string;

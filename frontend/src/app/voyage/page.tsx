@@ -4,9 +4,9 @@ import MainArticleCard from "@/components/MainArticleCard";
 import TopNewsArticle from "@/components/TopNewsArticle";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import Link from "next/link";
 
 interface ArticleSummary {
+  id: number;
   slug: string;
   imageUrl: string;
   altText: string;
@@ -31,27 +31,37 @@ interface TopNewsArticleProps {
 // Function to fetch articles specifically for the "Voyage" theme
 async function getVoyageArticles(): Promise<ArticleSummary[]> {
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-  console.log("Fetching voyage articles from:", `${backendUrl}/api/posts?theme=Voyage`);
+  console.log(
+    "Fetching voyage articles from:",
+    `${backendUrl}/api/posts?theme=Voyage`,
+  );
   const res = await fetch(`${backendUrl}/api/posts?theme=Voyage`, {
-    cache: 'no-store',
+    cache: "no-store",
   });
   if (!res.ok) {
     const errorBody = await res.text();
-    console.error(`Failed to fetch voyage articles: ${res.status} - ${errorBody}`);
-    throw new Error('Failed to fetch voyage articles');
+    console.error(
+      `Failed to fetch voyage articles: ${res.status} - ${errorBody}`,
+    );
+    throw new Error("Failed to fetch voyage articles");
   }
   return res.json();
 }
 
 // Function to fetch top news articles for the "Voyage" theme
 async function getTopVoyageNews(): Promise<TopNewsArticleProps[]> {
-   const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/top-posts?theme=Voyage`, {
-    cache: 'no-store', // Also disable caching here
-  });
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/top-posts?theme=Voyage`,
+    {
+      cache: "no-store", // Also disable caching here
+    },
+  );
   if (!res.ok) {
     const errorBody = await res.text();
-    console.error(`Failed to fetch top voyage news: ${res.status} - ${errorBody}`);
-    throw new Error('Failed to fetch top voyage news');
+    console.error(
+      `Failed to fetch top voyage news: ${res.status} - ${errorBody}`,
+    );
+    throw new Error("Failed to fetch top voyage news");
   }
   return res.json();
 }
@@ -59,7 +69,6 @@ async function getTopVoyageNews(): Promise<TopNewsArticleProps[]> {
 const VoyagePage: React.FC = async () => {
   const voyageArticles = await getVoyageArticles();
   const topVoyageNews = await getTopVoyageNews();
-
 
   return (
     <>
@@ -73,22 +82,23 @@ const VoyagePage: React.FC = async () => {
           <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12 grow">
             {voyageArticles.length > 0 ? (
               voyageArticles.map((article) => (
-                <Link
-                  href={`/articles/${article.slug}`}
-                  key={article.slug}
-                  className="hover:opacity-90 transition duration-300 block"
-                >
-                  <MainArticleCard postId={""} {...article} categoryName={article.categoryName} />
-                </Link>
+                <MainArticleCard
+                  key={article.slug} // ✅ key único
+                  postId={article.id} // ✅ para LikeButton
+                  {...article}
+                  categoryName={article.categoryName}
+                />
               ))
             ) : (
-              <p className="text-gray-600 col-span-full">Aucun article sur les voyages trouvé pour le moment.</p>
+              <p className="text-gray-600 col-span-full">
+                Aucun article sur les voyages trouvé pour le moment.
+              </p>
             )}
           </section>
 
           <section className="ml-8 w-1/3 min-w-75 hidden lg:block">
             <h2 className="font-josefin text-2xl font-bold text-gray-900 mb-6">
-              Le plus populaire 
+              Le plus populaire
             </h2>
             <div className="grid grid-cols-1 gap-6">
               {topVoyageNews.length > 0 ? (
@@ -96,7 +106,9 @@ const VoyagePage: React.FC = async () => {
                   <TopNewsArticle key={article.slug} {...article} />
                 ))
               ) : (
-                <p className="text-gray-600">Aucune actualité sur les voyages récente.</p>
+                <p className="text-gray-600">
+                  Aucune actualité sur les voyages récente.
+                </p>
               )}
             </div>
           </section>
@@ -106,6 +118,5 @@ const VoyagePage: React.FC = async () => {
     </>
   );
 };
-
 
 export default VoyagePage;

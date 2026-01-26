@@ -4,9 +4,9 @@ import MainArticleCard from "@/components/MainArticleCard";
 import TopNewsArticle from "@/components/TopNewsArticle";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import Link from "next/link";
 
 interface ArticleSummary {
+  id: number;
   slug: string;
   imageUrl: string;
   altText: string;
@@ -31,14 +31,19 @@ interface TopNewsArticleProps {
 // Function to fetch articles specifically for the "Voiture" theme
 async function getVoitureArticles(): Promise<ArticleSummary[]> {
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-  console.log("Fetching voiture articles from:", `${backendUrl}/api/posts?theme=Voiture`);
+  console.log(
+    "Fetching voiture articles from:",
+    `${backendUrl}/api/posts?theme=Voiture`,
+  );
   const res = await fetch(`${backendUrl}/api/posts?theme=Voiture`, {
-    cache: 'no-store',
+    cache: "no-store",
   });
   if (!res.ok) {
     const errorBody = await res.text();
-    console.error(`Failed to fetch voiture articles: ${res.status} - ${errorBody}`);
-    throw new Error('Failed to fetch voiture articles');
+    console.error(
+      `Failed to fetch voiture articles: ${res.status} - ${errorBody}`,
+    );
+    throw new Error("Failed to fetch voiture articles");
   }
   return res.json();
 }
@@ -47,12 +52,14 @@ async function getVoitureArticles(): Promise<ArticleSummary[]> {
 async function getTopVoitureNews(): Promise<TopNewsArticleProps[]> {
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const res = await fetch(`${backendUrl}/api/posts/top-posts?theme=Voiture`, {
-    cache: 'no-store',
+    cache: "no-store",
   });
   if (!res.ok) {
     const errorBody = await res.text();
-    console.error(`Failed to fetch top voiture news: ${res.status} - ${errorBody}`);
-    throw new Error('Failed to fetch top voiture news');
+    console.error(
+      `Failed to fetch top voiture news: ${res.status} - ${errorBody}`,
+    );
+    throw new Error("Failed to fetch top voiture news");
   }
   return res.json();
 }
@@ -60,7 +67,6 @@ async function getTopVoitureNews(): Promise<TopNewsArticleProps[]> {
 const VoiturePage: React.FC = async () => {
   const voitureArticles = await getVoitureArticles();
   const topVoitureNews = await getTopVoitureNews();
-
 
   return (
     <>
@@ -74,22 +80,23 @@ const VoiturePage: React.FC = async () => {
           <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12 grow">
             {voitureArticles.length > 0 ? (
               voitureArticles.map((article) => (
-                <Link
-                  href={`/articles/${article.slug}`}
-                  key={article.slug}
-                  className="hover:opacity-90 transition duration-300 block"
-                >
-                  <MainArticleCard postId={""} {...article} categoryName={article.categoryName} />
-                </Link>
+               <MainArticleCard
+                  key={article.slug} 
+                  postId={article.id}  
+                  {...article}
+                  categoryName={article.categoryName}
+                />
               ))
             ) : (
-              <p className="text-gray-600 col-span-full">Aucun article sur les voitures trouvé pour le moment.</p>
+              <p className="text-gray-600 col-span-full">
+                Aucun article sur les voitures trouvé pour le moment.
+              </p>
             )}
           </section>
 
           <section className="ml-8 w-1/3 min-w-75 hidden lg:block">
             <h2 className="font-josefin text-2xl font-bold text-gray-900 mb-6">
-              Le plus populaire 
+              Le plus populaire
             </h2>
             <div className="grid grid-cols-1 gap-6">
               {topVoitureNews.length > 0 ? (
@@ -97,7 +104,9 @@ const VoiturePage: React.FC = async () => {
                   <TopNewsArticle key={article.slug} {...article} />
                 ))
               ) : (
-                <p className="text-gray-600">Aucune actualité voiture récente.</p>
+                <p className="text-gray-600">
+                  Aucune actualité voiture récente.
+                </p>
               )}
             </div>
           </section>
