@@ -8,6 +8,7 @@
   "dev": "node --watch app.js",
   "seed": "node prisma/seed.js",
   "test": "jest",
+  "postinstall": "prisma generate",
   "start": "node app.js"
 },
   "keywords": [],
