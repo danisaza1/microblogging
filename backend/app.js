@@ -17,20 +17,11 @@ import uploadRoutes from "./routes/upload.js";
 import likesRoutes from "./routes/likes.js";
 
 // Import your custom middleware
-import {
-  authenticateToken,
-  verifyAdmin,
-  optionalAuth,
-} from "./middleware/authMiddleware.js";
+import { authenticateToken, verifyAdmin } from "./middleware/authMiddleware.js";
 import { notFoundHandler, errorHandler } from "./middleware/errorHandlers.js";
 
 const app = express();
 const port = process.env.PORT || 3001; // ✅ Railway usa PORT dinámico
-
-// --- Global Middleware ---
-app.use(express.json());
-app.use(cookieParser());
-
 
 // ✅ CORS configurado para desarrollo Y producción
 const allowedOrigins = [
@@ -41,39 +32,29 @@ const allowedOrigins = [
   /https:\/\/.*\.vercel\.app$/,
 ];
 
+// --- Global Middleware ---
+app.use(express.json());
+app.use(cookieParser());
+
+// --- CORS Middleware (Global) ---
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Permite requests sin origin (como Postman, curl, o mobile apps)
       if (!origin) return callback(null, true);
-
-      // Verifica si el origin está en la lista permitida
       const isAllowed = allowedOrigins.some((allowedOrigin) => {
-        if (allowedOrigin instanceof RegExp) {
-          return allowedOrigin.test(origin);
-        }
+        if (allowedOrigin instanceof RegExp) return allowedOrigin.test(origin);
         return allowedOrigin === origin;
       });
-
-      if (isAllowed) {
-        callback(null, true);
-      } else {
-        console.warn(`⚠️  CORS blocked origin: ${origin}`);
-        callback(new Error("Not allowed by CORS"));
-      }
+      if (isAllowed) callback(null, true);
+      else callback(new Error("Not allowed by CORS"));
     },
-    credentials: true, // Permite cookies/auth headers
+    credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
     exposedHeaders: ["Set-Cookie"],
-    maxAge: 86400, // Cache preflight por 24 horas
+    maxAge: 86400,
   }),
 );
-
-app.options("*", cors({
-  origin: allowedOrigins,
-  credentials: true,
-}));
 
 // ✅ Health check para Railway/Vercel
 app.get("/health", (req, res) => {
@@ -82,21 +63,13 @@ app.get("/health", (req, res) => {
 
 // --- API Routes ---
 app.use("/api/posts", postsRoutes);
-console.log("[Backend Init] Posts routes mounted at /api/posts");
-
 app.use("/api/users", usersRoutes);
-
-// ✅ Mount commentsRoutes for GENERIC /api/comments/... routes
 app.use("/api/comments", commentRoutes);
-console.log("[Backend Init] Comments routes mounted at /api/comments");
-
 app.use("/api/themes", themeRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", authenticateToken, verifyAdmin, adminRoutes);
 app.use("/api", uploadRoutes);
 app.use("/api/likes", likesRoutes);
-
-// ✅ Mount commentsRoutes AGAIN for POST-SPECIFIC /api/posts/:postId/comments routes
 app.use("/api/posts", commentRoutes);
 
 // Route racine
@@ -118,15 +91,6 @@ app.listen(port, "0.0.0.0", () => {
   console.log(`🚀 Serveur lancé sur : http://localhost:${port}`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}`);
   console.log(`📡 Routes de commentaires disponibles:`);
-  console.log(`    - GET  /api/comments`);
-  console.log(`    - GET  /api/comments/:id`);
-  console.log(`    - GET  /api/posts/:postId/comments`);
-  console.log(`    - POST /api/posts/:postId/comments`);
-  console.log(`    - PUT  /api/comments/:id`);
-  console.log(`    - DELETE /api/comments/:id`);
-  console.log(`📡 Routes de likes disponibles:`);
-  console.log(`    - GET  /api/posts/:postId/likes`);
-  console.log(`    - POST /api/posts/:postId/like`);
 });
 
 export default app;
