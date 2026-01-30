@@ -1,55 +1,33 @@
 //app.js
 
-console.log("🔍 Starting app...");
-console.log("🔍 PORT:", process.env.PORT);
-console.log("🔍 FRONTEND_URL:", process.env.FRONTEND_URL);
-console.log("🔍 JWT_SECRET:", process.env.JWT_SECRET ? "✅ Set" : "❌ Missing");
-
 
 import dotenv from "dotenv";
 dotenv.config();
-console.log("✅ dotenv loaded");
 import express from "express";
-console.log("✅ express imported");
 import cors from "cors";
-console.log("✅ cors imported");
 import cookieParser from "cookie-parser";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-try {
-  await prisma.$connect();
-  console.log("✅ Database connected");
-} catch (error) {
-  console.error("❌ Database connection failed:", error);
-  process.exit(1);
-}
+
 
 // Import your route modules
 import postsRoutes from "./routes/posts.js";
-console.log("✅ posts routes imported");
 import usersRoutes from "./routes/users.js";
-console.log("✅  routes imported");
 import commentRoutes from "./routes/comments.js";
-console.log("✅ comments routes imported");
 import themeRoutes from "./routes/themes.js";
-console.log("✅ themes routes imported");
 import authRoutes from "./routes/auth.js";
-console.log("✅ auth routes imported");
 import adminRoutes from "./routes/admin.js";
-console.log("✅ admi routes imported");
 import uploadRoutes from "./routes/upload.js";
-console.log("✅ upload routes imported");
 import likesRoutes from "./routes/likes.js";
-console.log("✅ likes routes imported");
 
 // Import your custom middleware
 import { authenticateToken, verifyAdmin } from "./middleware/authMiddleware.js";
 import { notFoundHandler, errorHandler } from "./middleware/errorHandlers.js";
 
 const app = express();
-const port = process.env.PORT || 3001; // usa el puerto dinámico si existe, fallback 3001
-
+const port = process.env.PORT || 3001;
+console.log("🔍 Using PORT:", port); // Verifica qué puerto usa Railway
 
 // ✅ CORS configurado para desarrollo Y producción
 const allowedOrigins = [
