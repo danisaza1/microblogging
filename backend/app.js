@@ -39,10 +39,12 @@ const allowedOrigins = [
 app.use(express.json());
 app.use(cookieParser());
 
+
 // --- CORS Middleware (Global) ---
 app.use(
   cors({
     origin: (origin, callback) => {
+      // ✅ Permitir requests sin origin (Postman, mobile apps, etc.)
       if (!origin) return callback(null, true);
 
       if (allowedOrigins.includes(origin)) {
@@ -55,9 +57,13 @@ app.use(
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    preflightContinue: false, // ✅ Importante: maneja OPTIONS automáticamente
+    optionsSuccessStatus: 204, // ✅ Algunos navegadores legacy usan 204
   })
 );
 
+// ✅ AÑADE ESTO: Maneja explícitamente OPTIONS para todas las rutas
+app.options("*", cors());
 
 
 // ✅ Health check para Railway/Vercel
