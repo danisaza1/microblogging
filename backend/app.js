@@ -21,7 +21,7 @@ import { authenticateToken, verifyAdmin } from "./middleware/authMiddleware.js";
 import { notFoundHandler, errorHandler } from "./middleware/errorHandlers.js";
 
 const app = express();
-const port = process.env.PORT;  // ✅ Railway usa PORT dinámico
+const port = process.env.PORT || 3001; // usa el puerto dinámico si existe, fallback 3001
 if (!port) {
   console.error("❌ Error: PORT no está definido en Railway");
   process.exit(1);
