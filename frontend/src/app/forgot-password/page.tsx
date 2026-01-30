@@ -14,6 +14,10 @@ const ForgotPasswordPage: React.FC = () => {
   const [message, setMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -97,29 +101,116 @@ const ForgotPasswordPage: React.FC = () => {
               <label className="block text-sm font-medium text-gray-700">
                 Nouveau mot de passe
               </label>
+              <div className="relative">
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 name="password"
                 required
                 value={formData.password}
                 onChange={handleChange}
                 className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:border-orange-500"
               />
+               <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-black"
+                  >
+                    {showPassword ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="m15 18-.722-3.25" />
+                        <path d="M2 8a10.645 10.645 0 0 0 20 0" />
+                        <path d="m20 15-1.726-2.05" />
+                        <path d="m4 15 1.726-2.05" />
+                        <path d="m9 18 .722-3.25" />
+                      </svg>
+                    )}
+                  </button>
+            </div>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Confirmer le mot de passe
               </label>
+              <div className="relative">
               <input
-                type="password"
+                    type={showConfirmPassword ? "text" : "password"}
                 name="confirmPassword"
                 required
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:border-orange-500"
               />
+              <button
+                    type="button"
+                    onClick={() =>
+                      setShowConfirmPassword(!showConfirmPassword)
+                    }
+                    className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-black"
+                  >
+                     {showConfirmPassword ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="m15 18-.722-3.25" />
+                        <path d="M2 8a10.645 10.645 0 0 0 20 0" />
+                        <path d="m20 15-1.726-2.05" />
+                        <path d="m4 15 1.726-2.05" />
+                        <path d="m9 18 .722-3.25" />
+                      </svg>
+                    )}
+                  </button>
             </div>
+            </div>
+            
 
             {errorMessage && (
               <p className="text-sm text-red-600">{errorMessage}</p>

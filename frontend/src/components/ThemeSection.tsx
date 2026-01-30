@@ -67,6 +67,8 @@ const ThemeSection: React.FC = () => {
               <Image
                 src={theme.image}
                 alt={theme.name}
+                width={400}
+                height={250}
                 className="w-full h-auto rounded-xl filter grayscale transition-all duration-500 group-hover:filter-none object-cover aspect-video"
               />
             </div>
