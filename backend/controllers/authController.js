@@ -70,8 +70,8 @@ export const login = async (req, res) => {
     // 🍪 Stocker le refreshToken dans le cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: false, // à mettre sur true en prod (HTTPS)
-      sameSite: "strict",
+      secure: true, // à mettre sur true en prod (HTTPS)
+      sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -126,7 +126,7 @@ export const refreshToken = async (req, res) => {
 
 // Déconnexion
 export const logout = (req, res) => {
-  res.clearCookie("refreshToken", { httpOnly: true, sameSite: "strict", secure: false });
+  res.clearCookie("refreshToken", { httpOnly: true, secure: true, sameSite: "none" });
   res.status(200).json({ message: "Déconnecté avec succès." });
 };
 

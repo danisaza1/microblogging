@@ -21,7 +21,11 @@ import { authenticateToken, verifyAdmin } from "./middleware/authMiddleware.js";
 import { notFoundHandler, errorHandler } from "./middleware/errorHandlers.js";
 
 const app = express();
-const port = process.env.PORT || 3001; // ✅ Railway usa PORT dinámico
+const port = process.env.PORT;  // ✅ Railway usa PORT dinámico
+if (!port) {
+  console.error("❌ Error: PORT no está definido en Railway");
+  process.exit(1);
+}
 
 // ✅ CORS configurado para desarrollo Y producción
 const allowedOrigins = [
@@ -29,7 +33,6 @@ const allowedOrigins = [
   "http://localhost:3001", // Backend local
   process.env.FRONTEND_URL, // Tu URL de Vercel (variable de entorno)
   "https://microblogging-three.vercel.app", // Reemplaza con tu dominio real
-  /https:\/\/.*\.vercel\.app$/,
 ];
 
 // --- Global Middleware ---
@@ -39,27 +42,27 @@ app.use(cookieParser());
 // --- CORS Middleware (Global) ---
 app.use(
   cors({
-    origin: function (origin, callback) {
+    origin: (origin, callback) => {
       if (!origin) return callback(null, true);
 
-      const isAllowed = allowedOrigins.some((allowedOrigin) => {
-        if (allowedOrigin instanceof RegExp) return allowedOrigin.test(origin);
-        return allowedOrigin === origin;
-      });
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
 
-      if (isAllowed) callback(null, true);
-      else callback(new Error(`CORS blocked for origin: ${origin}`));
+      console.error("❌ CORS blocked:", origin);
+      return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-    exposedHeaders: ["Set-Cookie"],
-    maxAge: 86400,
-  }),
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
 );
+
+
 
 // ✅ Health check para Railway/Vercel
 app.get("/health", (req, res) => {
+   console.log("✅ /health called");
   res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
