@@ -33,8 +33,7 @@ console.log("🔍 Using PORT:", port); // Verifica qué puerto usa Railway
 const allowedOrigins = [
   "http://localhost:3000", // Desarrollo local
   "http://localhost:3001", // Backend local
-  process.env.FRONTEND_URL, // Tu URL de Vercel (variable de entorno)
-  "https://microblogging-three.vercel.app", // Reemplaza con tu dominio real
+  process.env.FRONTEND_URL || "https://microblogging-three.vercel.app", // Tu URL de Vercel (variable de entorno)
 ];
 
 // --- Global Middleware ---
